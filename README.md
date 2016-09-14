@@ -26,5 +26,5 @@ ipconfig /all
 //手机输入 本地IP :6789
 ```
 #问题
-有时候API会挂
+有时候API会挂 9月13号还是好好的，9月14号有时候会挂。
 ![image](https://github.com/yunyi1895/vue-music-master/blob/master/src/assets/reson.png?raw=true)
