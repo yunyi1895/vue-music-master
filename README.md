@@ -1,6 +1,7 @@
 #说明
 
 使用vue-cli搭建了一个小项目vue-music,手机端项目。
+目前离职状态，人在上海，求份工作。
   
 ![image](https://github.com/yunyi1895/vue-music-master/blob/master/src/assets/QQ%E5%9B%BE%E7%89%8720160914130647.jpg?raw=true)
 ![image](https://github.com/yunyi1895/vue-music-master/blob/master/src/assets/QQ%E5%9B%BE%E7%89%8720160914130623.jpg?raw=true)
