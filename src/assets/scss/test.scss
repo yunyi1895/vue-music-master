@@ -1,0 +1,6 @@
+@mixin scssrotate($r){
+    transform: rotate($r);
+    -ms-transform: rotate($r);
+    -moz-transform: rotate($r);
+    -webkit-transform: rotate($r);
+}
