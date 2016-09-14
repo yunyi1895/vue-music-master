@@ -25,3 +25,6 @@ ipconfig /all
 //查看IPv4 地址，默认网关和DNS服务器就可以了，获取本地IP地址
 //手机输入 本地IP :6789
 ```
+#问题
+有时候API会挂
+![image](https://github.com/yunyi1895/vue-music-master/blob/master/src/assets/reson.png?raw=true)
