@@ -217,12 +217,10 @@
 			}
 			ul{
 				position: absolute;
-				left: -100px;
-				top:-200px;
-				transition: all 0.6;
-				background:rgba(0,0,0,0.8);
-				height: 200px;
-				width: 100px;
+				
+				
+				
+				
 				display: block;
 				z-index: 999;
 				text-align: center;
@@ -269,6 +267,27 @@
 	@include scssanmation(xzimg 10s linear infinite);
 	width: 0.7rem;height: 0.7rem; border-radius: 100%; display: block;margin-left: 0.1rem;margin-top: 0.1rem;
 }
+/* 必需 */
+.expand-transition {
+  transition: all .3s ease;
+  background:rgba(0,0,0,0.8);
+  height: 200px;
+	width: 100px;
+	left: -100px;
+	top:-200px;
+  overflow: hidden;
+}
+
+/* .expand-enter 定义进入的开始状态 */
+/* .expand-leave 定义离开的结束状态 */
+.expand-enter, .expand-leave {
+  height: 0;
+  width:0;
+ left:0;
+ top:0;
+  opacity: 0;
+}
+
 </style>
 <template>
 	
@@ -279,17 +298,14 @@
 			<img id="songimg" v-bind:class="{'pause':start}" />
 		</div>
 		<div class="songtitle">
-				<h1>
+			<h1>
 				<span>
 					{{songurl.fileName}}
 				</span>
 			</h1>
-			
-			
 		</div>
 		<div class="play">
 			<span @click="switchplay"  v-bind:class="{'icon_play--pause':pause,'icon_play':true,'icon_play--start':start}">
-				
 			</span>
 		</div>
 	</div>
@@ -305,7 +321,7 @@
 	<div id="palysonglist">
 		<div id="songlist" class="palysonglis-icon">
 			<img @click="this.showpalysonglist=!this.showpalysonglist"  src="../assets/list.png"/>
-			<ul v-show="showpalysonglist">
+			<ul v-show="showpalysonglist"  transition="expand">
 				<li v-for="l in palysonglist" @click="switchsong(l)"  v-bind:class="{ 'songlistact': l.hash==this.hash}">{{l.songname}}</li>
 			</ul>
 		</div> 
@@ -322,6 +338,7 @@
 	export default{
 		data(){
 			return{
+				adressIP:'',
 				hash:'',
 				songurl:{url:''},
 				songkrc:[],
@@ -353,9 +370,7 @@
 				}else{
 					lovelist=JSON.parse(lovelist)
 				}
-				
 				if(this.islove){
-					
 					var obj={
 						songname:songname,
 						singername:singername,
@@ -371,66 +386,55 @@
 					}
 					$('#heart').removeClass('loves')
 				}
-				
 				localStorage.setItem('lovelist',JSON.stringify(lovelist))
 			},
 			switchplay:function(){//暂停 播放歌曲
 				var myVideo=document.getElementById("h5audio_media"); 
-				
 				if(this.start){
 					 myVideo.play(); 
 				}else{
-					
-					  myVideo.pause(); 
+					myVideo.pause(); 
 				}
 				this.start=!this.start
 				this.pause=!this.pause
-				
-				
 			},
 			getsongurl:function(){//获取歌曲播放地址
 				var hash=this.hash
 				var vm=this
-	          	this.$http({
+				var ip=sessionStorage.getItem("adressIP")
+	          		this.$http({
 	                method:'GET',
-	                 url:'http://apis.baidu.com/geekery/music/playinfo/?hash='+hash,
-	               	headers: {apikey: '2596cea20d986d38d9ede9e62f301841'},
+	                 url:'http://'+ip+':8081/song/?hash='+hash,
+	              // 	headers: {apikey: '2596cea20d986d38d9ede9e62f301841'},
 	                }).then(function(data){
-	                	var d=JSON.parse(data.body).data
+	              		var d=data.body.data
 	                	vm.songurl=d
 	                	$('#h5audio_media').attr('src',d.url)
-	                	//console.log(JSON.stringify(d))
 	                	this.getsonggc(d.fileName,d.timeLength)
-	                	
-	               })
+	               	})
 			},
 			getsonggc:function(fn,time){//获取歌词
 				var hash=this.hash
 				var vm=this
+				var ip=sessionStorage.getItem("adressIP")
 				var urlParam='?name='+fn+'&hash='+hash+'&time='+time
-				
-	          	this.$http({
+				this.$http({
 	                method:'GET',
-	                 url:'http://apis.baidu.com/geekery/music/krc'+urlParam,
-	               	headers: {apikey: '2596cea20d986d38d9ede9e62f301841'},
+	                url:'http://'+ip+':8081/krc'+urlParam,
+	               	//headers: {apikey: '2596cea20d986d38d9ede9e62f301841'},
 	                }).then(function(data){
-	                	var songkrc=JSON.parse(data.body).data.content
+	                	var songkrc=data.body.data.content
 	               		var d=songkrc.split('\n')
 	               		function totime(s){
-	               		     if(s=='') return ''
+	               		    if(s=='') return ''
 							var t1=s.indexOf(":")
-							
 							var s1=s.substring(0,t1)
 							var s2=s.substring(t1+1)
-						
 							var z=Number(s1)*60+Number(s2)
-						
 							return z
 	               		}
-	               		
 	               		for(var i=0;i<d.length;i++){
 	               			var bj=d[i].indexOf(']')
-	               			
 	               			var z=d[i].substring(1,bj)
 	               			if(d[i].substring(bj+1)!='\r'){
 	               				vm.songkrc.push({
@@ -438,10 +442,8 @@
 	               				gc:d[i].substring(bj+1)
 	               				})
 	               			}
-	               			
 	               		}
-	               		
-	               })
+	               	})
 	            setTimeout(function(){
 	            	var paused=document.getElementById("h5audio_media").paused;
 	            	if(paused){
@@ -454,16 +456,15 @@
 			getsingerInfo:function(name){//获取歌手信息
 				var singername=this.singername
 				var vm=this
+				var ip=sessionStorage.getItem("adressIP")
 				this.$http({
 	                method:'GET',
-	                 url:'http://apis.baidu.com/geekery/music/singer/?name='+singername,
-	               	headers: {apikey: '2596cea20d986d38d9ede9e62f301841'},
-	                }).then(function(data){
-	                	var d=JSON.parse(data.body).data
+	                 url:'http://'+ip+':8081/singerInfo/?name='+singername,
+	              	}).then(function(data){
+		       			var d=data.body.data
 	                	$('#songimg').attr('src',d.image)
 	                	$('#bgimg').css("backgroundImage",'url('+d.image+')')
 	                	vm.singerinfo=d
-	                
 	               })
 	               
 	                
@@ -481,13 +482,10 @@
 							this.islove=true
 						}
 				}
-				
 				if(this.islove){
 					$('#heart').addClass('loves')
-				
 				}else{
 					$('#heart').removeClass('loves')
-					
 				}
 				
 			},
@@ -495,13 +493,11 @@
 				var Media= document.getElementById("h5audio_media")
 				var liobj=$('.songbodyli').removeClass('act')
 				var objarr=[]
-				
 				this.tY=parseInt(Media.currentTime)
 				if(this.tY==0){
 					$('#aduioul').css('transform','translateY(0)')
 				}
 				var s=this.songkrc
-			
 				for(var i=0;i<s.length;i++){
 					if(s[i+1]&&s[i+1].time>Media.currentTime&&s[i].time<Media.currentTime+0.1){
 						liobj.eq(i).addClass('act')
@@ -509,7 +505,6 @@
 							var trla='translateY('+(i-1)* (-42)+'px)'
 							$('#aduioul').css('transform',trla)
 						}
-						
 					}
 				}
 				
@@ -525,9 +520,9 @@
 					}
 				}
 				if(ii<=7){
-					sl=list.slice(0,8)
+					sl=list.slice(0,10)
 				}else{
-					sl=list.slice(ii-4,ii+4)
+					sl=list.slice(ii-5,ii+5)
 				}
 				this.palysonglist=sl
 				
@@ -535,10 +530,11 @@
 			switchsong:function(l){//切换歌曲
 				//console.log(JSON.stringify(l))
 				this.$router.go({path:'/playsong',query:{hash:l.hash,singername:l.singername,songname:l.songname}})
-				
+				//this.init()
 				location.reload() 
 			},
 			init:function(){//初始化
+				
 				this.hash=this.$route.query.hash
 				this.singername= this.$route.query.singername
 				this.songname= this.$route.query.songname
@@ -549,14 +545,13 @@
 					document.getElementById("h5audio_media").play();
 				});
 				var palysonglist=JSON.parse(sessionStorage.getItem('songlist'))
-			
+				
 				this.randepalysonglist(palysonglist)
 			}
 			
 		},
 		ready(){
 			this.init()
-			
 		},
 		events:{//子组件传播事件
 			'setval':function(val){

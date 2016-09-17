@@ -3,23 +3,15 @@
 	<!--<div>
 		<swiper  :height="sehe" :list="list" :loop=true auto></swiper>
 	</div>-->
-	
-	<div class="lis" >
+<div class="lis" >
 		<ul>
-			
 			<li v-link="{path:'/playsong', query: {hash:i.hash,singername:i.singername,songname:i.songname}}" v-for="i in musicdata">
 				<i class="icon"> 	</i>
 				<h6 >{{i.songname}}</h6>
 				<span>{{i.singername}}</span>
 			</li>
-			
 		</ul>
-	
-	</div>
-	
-	<div>
-		
-	
+<div>
 </template>
 
 <script>
@@ -35,6 +27,7 @@ export default {
    data: function () {
   
     return {
+    	adressIP:'',
     	pullupconfig:{
 		    content: 'Pull Up To Refresh',
 		  pullUpHeight: 800,
@@ -72,25 +65,29 @@ export default {
 				var se=this.val
 				var vm=this
 	          	var keyurl='/?s=周杰伦&size=20&page=1'
-	           
-	            this.$http({
+	           	this.$http({
 	                method:'GET',
-	                
 	                url:'http://apis.baidu.com/geekery/music/query'+keyurl,
 	               	headers: {apikey: '2596cea20d986d38d9ede9e62f301841'},
 	                }).then(function(data){
 	                	var d=JSON.parse(data.data)
-	                	
 	                	vm.musicdata=d.data.data
-	                	
 	               })
-
-				
+			},
+			esd:function(){
+				var vm=this
+				var ip=sessionStorage.getItem("adressIP")
+				this.$http({
+	                method:'GET',
+	                url:'http://'+ip+':8081/get',
+	               }).then(function(data){
+	            		vm.musicdata=data.body.data.data
+	               		sessionStorage.setItem('songlist',JSON.stringify(vm.musicdata)) 
+	              })
 			}
 		},
   	ready(){
-  		 	this.sel()
-  		 	
+  		this.esd()
   	}
 }
 

@@ -56,6 +56,7 @@
 		data(){
 			
 			return {
+				adressIP:'',
 				nav:[
 					{
 						tit:'推荐',
@@ -74,7 +75,20 @@
 			}
 		},
 		methods:{
-			
+				getIPAdress:function(){
+				var vm=this
+				  this.$http({
+	                method:'GET',
+	                url:'http://localhost:8081',
+	               }).then(function(data){
+	            	vm.adressIP=data.body
+	            	sessionStorage.setItem('adressIP',data.body) 
+	               })
+
+			}
+		},
+		ready(){
+			this.getIPAdress()
 		}
 	}
 </script>

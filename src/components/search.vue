@@ -86,6 +86,7 @@
 	export default{
 		data(){
 			return{
+				adressIP:'',
 				musicdata:[],
 				searchval:'',
 				searchrecord:[],
@@ -119,15 +120,12 @@
 				
 				localStorage.setItem('record',vm.searchrecord.toString())
 	          	var keyurl='/?s='+vm.searchval+'&size=30&page=1'
-	           	
+	           	var ip=sessionStorage.getItem("adressIP")
 	            this.$http({
 	                method:'GET',
-	                url:'http://apis.baidu.com/geekery/music/query'+keyurl,
-	               	headers: {apikey: '2596cea20d986d38d9ede9e62f301841'},
-	                }).then(function(data){
-	                	var d=JSON.parse(data.data)
-	                	
-	                	vm.musicdata=d.data.data
+	                url:'http://'+ip+':8081/get'+keyurl,
+	            	}).then(function(data){
+	                	vm.musicdata=data.body.data.data
 	                	sessionStorage.setItem('songlist',JSON.stringify(vm.musicdata)) 
 	               })
 			},
@@ -139,6 +137,7 @@
 		},
 		ready(){
 			var  vm=this
+			this.adressIP=sessionStorage.getItem("adressIP")
 			var record=localStorage.getItem('record')
 			
 			if(record==null||record==''){
