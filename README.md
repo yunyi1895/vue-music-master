@@ -17,7 +17,8 @@ npm install
 //运行
 npm run dev
 
-//本地服务器建立
+//本地服务器建立 注意：再开个终端
+
 node appserver.js
 
 //localhost:6789
