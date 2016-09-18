@@ -82,7 +82,11 @@
 	                url:'http://localhost:8081',
 	               }).then(function(data){
 	            	vm.adressIP=data.body
-	            	sessionStorage.setItem('adressIP',data.body) 
+	              var ip=sessionStorage.getItem('adressIP')
+	            	if(ip==''||ip==null){
+	            		sessionStorage.setItem('adressIP',data.body)
+	            		window.location.href="http://"+data.body+":6789"
+	            	}
 	               })
 
 			}
