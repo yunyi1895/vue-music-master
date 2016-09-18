@@ -17,15 +17,16 @@ npm install
 //运行
 npm run dev
 
+//本地服务器建立
+node appserver.js
+
 //localhost:6789
 ```
 ##手机端访问（要求和电脑端一个局域网）
 ```
-cmd
-ipconfig /all
-//查看IPv4 地址，默认网关和DNS服务器就可以了，获取本地IP地址
-//手机输入 本地IP :6789
+
 ```
 #问题
-有时候API会挂 9月13号还是好好的，9月14号有时候会挂。
-![image](https://github.com/yunyi1895/vue-music-master/blob/master/src/assets/reson.png?raw=true)
+//有时候API会挂 9月13号还是好好的，9月14号有时候会挂。
+问题已解决
+api store 经常挂，我又找开发者要了一个接口，不过要跨域，所以走node，解决跨域。
