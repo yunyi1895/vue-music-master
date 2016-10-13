@@ -1,7 +1,7 @@
 <template>
 	<div class="range1">
 		<div class="range1cont">
-			<span class="range1-bar">
+			<span @click="changeval"  class="range1-bar">
 				<span class="range1-val">{{val|tofz}}</span>
 				<span id="randle" class="range1-randle"></span>
 				<span id="quantity" class="range1-quantity"></span>
@@ -95,6 +95,14 @@
 				var bl=this.bl
 				$('.range1-randle').css('left',this.val*bl+'px')
 				$('.range1-quantity').css('width',this.val*bl+'px')
+			},
+			changeval:function($e){
+				var bl=this.bl
+				var s=($e.pageX-50)/bl
+				if(s<0) return
+				this.val=s
+				
+				this.$dispatch('setval',this.val)
 			},
 			touch:function(){
 				this.barwidth=parseInt($('.range1-bar').css('width'))-20
