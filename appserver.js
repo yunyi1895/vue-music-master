@@ -41,10 +41,12 @@ app.get('/test', function (req, res) {
 app.get('/get', function (req, resn) {
 	var s=req.query.s?req.query.s:'许嵩';
 	s=encodeURI(s)
+	var size=req.query.size
+	var page=req.query.page
+	
 
-//http://api.open.itmf.cn/music/mf_music/search?app_id=dev_yunyi&key=KAHDIUWqlsdjswajlGEKAW32KJD92QccE3&s=%E8%AE%B8%E5%B5%A9&page=2&size=20
 	var html='';
-  	var urle='http://api.open.itmf.cn/music/mf_music/search?app_id=dev_yunyi&key=KAHDIUWqlsdjswajlGEKAW32KJD92QccE3&s='+s+'&page=2&size=20'
+  	var urle='http://api.open.itmf.cn/music/mf_music/search?app_id=dev_yunyi&key=KAHDIUWqlsdjswajlGEKAW32KJD92QccE3&s='+s+'&page='+page+'&size=40'
   	
   	http.get(urle,function(res){
   		

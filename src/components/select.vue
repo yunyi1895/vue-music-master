@@ -10,6 +10,7 @@
 				<h6 >{{i.songname}}</h6>
 				<span>{{i.singername}}</span>
 			</li>
+			<li v-show="showloding" id="loding">加载。。。</li>
 		</ul>
 <div>
 </template>
@@ -28,10 +29,13 @@ export default {
   
     return {
     	adressIP:'',
+			page:1,
+			showloding:false,
     	pullupconfig:{
 		    content: 'Pull Up To Refresh',
 		  pullUpHeight: 800,
 		  height: 800,
+			
 		  autoRefresh: false,
 		  downContent: 'Release To Refresh',
 		  upContent: 'Pull Up To Refresh',
@@ -76,18 +80,34 @@ export default {
 			},
 			esd:function(){
 				var vm=this
+				console.log(this.page)
 				var ip=sessionStorage.getItem("adressIP")
+				var keyurl='/?s=许嵩&size=20&page='+this.page
+			
 				this.$http({
 	                method:'GET',
-	                url:'http://'+ip+':8081/get',
+	                url:'http://'+ip+':8081/get'+keyurl,
 	               }).then(function(data){
-	            		vm.musicdata=data.body.data.data
+	            		vm.musicdata.push(...data.body.data.data)
+									vm.showloding=false
 	               		sessionStorage.setItem('songlist',JSON.stringify(vm.musicdata)) 
 	              })
 			}
 		},
   	ready(){
   		this.esd()
+			var vm=this
+				$(document).scroll(function(){
+				var bheight = $(window).height();//浏览器当前窗口可视区域高度
+				var sheight = $("body")[0].scrollHeight;//获取滚动条高度，[0]是为了把jq对象转化为js对象
+				var stop = $("body").scrollTop();//滚动条距离顶部的距离
+				
+				if(stop>=sheight-bheight){//当滚动条到顶部的距离等于滚动条高度减去窗口高度时
+					vm.showloding=true
+					vm.page++
+					vm.esd()
+				}
+			});
   	}
 }
 
@@ -99,7 +119,7 @@ export default {
 		padding: 0;
 		
 	}
-	.lis li{
+	.lis li:not(:last-child){
 		list-style: none;
 		margin: 0;
 		padding: 0;
@@ -140,6 +160,13 @@ export default {
 		overflow: hidden; 
 		white-space: nowrap; 
 		text-overflow: ellipsis;
+	}
+	#loding{
+		height:30px;
+		line-height:30px;
+		color:#808080;
+		text-align:center;
+
 	}
 </style>
 
